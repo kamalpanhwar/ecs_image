@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+""" 
+How to use
+eval $(eval "aws sts assume-role
+
+then run env and you should see environment vrs in your shell.
+"""
+
+import sys
+import json
+
+sts_data = json.loads(
+  sys.stdin.read()
+  )
+
+creds = sts_data["Credentials"]
+
+env_vars_to_export = {
+  "AWS_ACCESS_KEY_ID": creds["AccessKeyId"],
+  "AWS_SECRET_ACCESS_KEY": creds["SecretAccessKey"],
+  "AWS_SESSION_TOKEN": creds["SessionToken"],
+}
+
+print("""
+export AWS_ACCESS_KEY_ID="{AWS_ACCESS_KEY_ID}"
+export AWS_SECRET_ACCESS_KEY="{AWS_SECRET_ACCESS_KEY}"
+export AWS_SESSION_TOKEN="{AWS_SESSION_TOKEN}"
+""".format(**env_vars_to_export)
+)
+
